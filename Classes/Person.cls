@@ -17,13 +17,6 @@ Private m_BirthD As Date
 Private m_City   As City
 Private m_Index  As Long
 
-Private Sub Class_Initialize()
-    'm_Name = "Max Mustermann"
-    'm_BirthD = DateSerial(Year(Now), Month(Now), Day(Now))
-    'Set m_City = MData.Cities_Add(MNew.City("Musterstadt", "00000"))
-    'm_Index = MData.Persons_Count
-End Sub
-
 Friend Sub New_(BirthDay As Date, City As City, Index As Long, Name As String)
     m_BirthD = BirthDay: Set m_City = City: m_Index = Index: m_Name = Name
 End Sub
@@ -35,10 +28,6 @@ Public Sub NewC(Other As Person)
         m_Name = .Name
         m_Index = .Index
     End With
-End Sub
-
-Public Sub NewV(Other)
-    Dim OtherPerson As Person: Set OtherPerson = Other: NewC OtherPerson
 End Sub
 
 Public Function Clone() As Person
@@ -77,9 +66,6 @@ End Property
 Public Property Get City() As City
     Set City = m_City
 End Property
-'Public Property Set City(ByVal Value As City)
-'    Set m_City = Value
-'End Property
 
 Public Property Get Index() As Long
     Index = m_Index
@@ -93,5 +79,5 @@ Public Property Get Name() As String
 End Property
 
 Public Function ToStr() As String
-    ToStr = Me.Name & "; " & m_BirthD & "; " & m_City.ToStr
+    ToStr = Me.Name & "; " & m_BirthD & "; " ' & m_City.ToStr
 End Function

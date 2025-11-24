@@ -19,12 +19,8 @@ Friend Sub New_(Name As String, PostalCode As String)
     m_Name = Name: m_Code = PostalCode
 End Sub
 
-Friend Sub NewC(Other As City)
+Public Sub NewC(Other As City)
     With Other: m_Name = .Name: m_Code = .PostalCode: End With
-End Sub
-
-Public Sub NewV(City)
-    Dim Other As City: Set Other = City: NewC Other
 End Sub
 
 Public Sub SetParams(Optional Name, Optional PostalCode)

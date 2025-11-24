@@ -12,7 +12,9 @@ End Sub
 ' v ' ############################## ' v '    ListBox    ' v ' ############################## ' v '
 Public Sub ListBox_Add(aLB As ListBox, ByVal Object As Object)
     aLB.AddItem Object.ToStr
-    aLB.ItemData(aLB.ListCount - 1) = Object.Key
+    Dim li As Long: li = aLB.ListCount - 1
+    aLB.ItemData(li) = Object.Key
+    aLB.ListIndex = li
 End Sub
 
 Public Sub ListBox_Swap(aLB As ListBox, ByVal i1 As Long, ByVal i2 As Long)
@@ -65,6 +67,7 @@ Public Sub ListBox_MoveDown(aLB As ListBox) ', ByVal i As Long)
     ListBox_Swap aLB, i1, i2
     aLB.ListIndex = i2
 End Sub
+' ^ ' ############################## ' ^ '    ListBox    ' ^ ' ############################## ' ^ '
 
 ' v ############################## v '    Cities     ' v ############################## v '
 Public Function Cities_Add(City As City) As City
@@ -104,13 +107,17 @@ Public Sub Cities_ToListCtrl(ComboBoxOrListBox)
 End Sub
 
 Public Sub Cities_MoveUp(aLB As ListBox) ', ByVal Index As Long)
+    Dim c As Long: c = aLB.ListCount
     Dim i As Long: i = aLB.ListIndex
+    If i < 1 And c <= i Then Exit Sub
     MPtr.Col_MoveUpKey m_Cities, i + 1
     ListBox_MoveUp aLB
 End Sub
 
 Public Sub Cities_MoveDown(aLB As ListBox) 'ByVal Index As Long)
+    Dim c As Long: c = aLB.ListCount
     Dim i As Long: i = aLB.ListIndex
+    If i < 1 And c <= i Then Exit Sub
     MPtr.Col_MoveDownKey m_Cities, i + 1
     ListBox_MoveDown aLB
 End Sub

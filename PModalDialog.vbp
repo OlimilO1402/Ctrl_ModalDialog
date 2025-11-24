@@ -12,6 +12,7 @@ Module=MPtr; ..\Ptr_Pointers\Modules\MPtr.bas
 Module=MString; ..\Sys_Strings\Modules\MString.bas
 Form=Forms\FCity.frm
 Module=MMath; ..\Math\Modules\MMath.bas
+Class=DBcrud; Classes\DBcrud.cls
 ResFile32="Resources\MyRes.res"
 Startup="Sub Main"
 HelpFile=""
