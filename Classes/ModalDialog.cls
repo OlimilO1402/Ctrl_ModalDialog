@@ -32,12 +32,6 @@ End Sub
 'Public Function ModalDialog(Dialog As Form, BtnOK As CommandButton, BtnCancel As CommandButton) As ModalDialog
 '    Set ModalDialog = New ModalDialog: ModalDialog.New_ Dialog, BtnOK, BtnCancel
 'End Function
-'example for using this class in a ButtonClick on a Form:
-'Private Sub BtnCityAdd_Click()
-'    Dim City As City: Set City = MNew.City("Musterstadt", "00000")
-'    If MNew.ModalDialog(FCity, FCity.BtnOK, FCity.BtnCancel).ShowDialog(City, Me) = vbCancel Then Exit Sub
-'    MData.Cities_AddLB LstCities, City
-'End Sub
 
 Public Function ShowDialog(Obj As Object, Owner As Form) As VbMsgBoxResult
     Set m_Object = Obj.Clone
@@ -57,3 +51,26 @@ End Sub
 Private Sub mBtnCancel_Click()
     Unload m_Dialog
 End Sub
+
+'Example for using this class in a ButtonClick on a Form:
+'Private Sub BtnCityAdd_Click()
+'    Dim City As City: Set City = MNew.City("Musterstadt", "00000")
+'    If MNew.ModalDialog(FCity, FCity.BtnOK, FCity.BtnCancel).ShowDialog(City, Me) = vbCancel Then Exit Sub
+'    MData.Cities_AddLB LstCities, City
+'End Sub
+'in the Form we need:
+'Private m_Obj As <AnyClass e.g. City>
+'
+'Public Sub UpdateView(Obj)
+'    Set m_Obj = Obj
+'    With m_Obj
+'        TxtName.Text = .Name
+'        TxtPostalCode.Text = .PostalCode
+'    End With
+'End Sub
+'
+'Public Function UpdateData(Obj) As Boolean
+'    m_City.NewC MNew.City(TxtName.Text, TxtPostalCode.Text)
+'    UpdateData = True
+'End Function
+
