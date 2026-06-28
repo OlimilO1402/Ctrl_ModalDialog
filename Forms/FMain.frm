@@ -19,6 +19,15 @@ Begin VB.Form FMain
    ScaleHeight     =   5895
    ScaleWidth      =   4575
    StartUpPosition =   3  'Windows-Standard
+   Begin VB.CommandButton BtnPersonView 
+      Caption         =   "View r.o."
+      Height          =   375
+      Left            =   120
+      TabIndex        =   14
+      ToolTipText     =   "just view data read only"
+      Top             =   5040
+      Width           =   1215
+   End
    Begin VB.CommandButton BtnPersonMoveDown 
       Caption         =   "Down [v]"
       Height          =   375
@@ -142,14 +151,16 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
+Private WithEvents mCrudCities  As DBcrud
+Attribute mCrudCities.VB_VarHelpID = -1
+Private WithEvents mCrudPersons As DBcrud
+Attribute mCrudPersons.VB_VarHelpID = -1
 
 Private Sub Form_Load()
+    Me.Caption = Me.Caption & " v" & App.Major & "." & App.Minor & "." & App.Revision
+    Set mCrudCities = MNew.DBcrud(MApp.Cities, True, Me.LstCities, Me.BtnCityAdd, , , , Me.BtnCityEdit, Me.BtnCityDel, Me.BtnCityMoveUp, Me.BtnCityMoveDown)
+    Set mCrudPersons = MNew.DBcrud(MApp.Persons, True, Me.LstPersons, Me.BtnPersonAdd, , , , Me.BtnPersonEdit, Me.BtnPersonDel, Me.BtnPersonMoveUp, Me.BtnPersonMoveDown)
     UpdateView
-End Sub
-
-Sub UpdateView()
-    MData.Cities_ToListCtrl LstCities
-    MData.Persons_ToListCtrl LstPersons
 End Sub
 
 Private Sub Form_Resize()
@@ -162,126 +173,34 @@ Private Sub Form_Resize()
     If W > 0 And H > 0 Then LstPersons.Move l, t, W, H
 End Sub
 
-' v ' ############################## ' v '    Cities     ' v ' ############################## ' v '
-Private Sub BtnCityAdd_Click()
-    Dim City As City: Set City = MNew.City("Musterstadt", "00000")
-    If MNew.ModalDialog(FCity, FCity.BtnOK, FCity.BtnCancel).ShowDialog(City, Me) = vbCancel Then Exit Sub
-    MData.Cities_AddLB LstCities, City
-End Sub
-
-Private Sub BtnCityEdit_Click()
-    'If LstCities.ListCount = 0 Then MsgBox "First add a city!": Exit Sub
-    Dim i As Long: i = -1
-    Dim City As City: Set City = MData.Cities_ObjectFromListCtrl(LstCities, i)
-    If City Is Nothing Then MsgBox "Select a city first!": Exit Sub
-    If MNew.ModalDialog(FCity, FCity.BtnOK, FCity.BtnCancel).ShowDialog(City, Me) = vbCancel Then Exit Sub
-    LstCities.List(i) = City.ToStr
-End Sub
-
-Private Sub BtnCityDel_Click()
-    'If LstCities.ListCount = 0 Then Exit Sub
-    Dim i As Long: i = -1
-    Dim City As City: Set City = MData.Cities_ObjectFromListCtrl(LstCities, i)
-    If i = 0 Then MsgBox "Can not delete the first city!": Exit Sub
-    If City Is Nothing Then MsgBox "First select an element to delete": Exit Sub
-    Dim CitiesInUse As Collection: Set CitiesInUse = MData.Persons_UsingCity(City)
-    Dim c As Long: c = CitiesInUse.Count
-    If c Then
-        MsgBox "Can not delete the city: " & City.ToStr & "; " & c & " person" & IIf(c > 1, "s are", " is") & " living there: " & vbCrLf & MPtr.Col_ToStr(CitiesInUse)
-        Exit Sub
-    End If
-    If MsgBox("Are you sure to delete the city: " & vbCrLf & City.ToStr, vbOKCancel) = vbCancel Then Exit Sub
-    MData.Cities_Remove City
-    LstCities.RemoveItem i
-End Sub
-
-Private Sub BtnCityMoveUp_Click()
-    MData.Cities_MoveUp LstCities
-End Sub
-
-Private Sub BtnCityMoveDown_Click()
-    MData.Cities_MoveDown LstCities
-End Sub
-
-Private Sub LstCities_DblClick()
-    BtnCityEdit.Value = True
-End Sub
-
-Private Sub LstCities_KeyDown(KeyCode As Integer, Shift As Integer)
-    Select Case KeyCode
-    Case KeyCodeConstants.vbKeyAdd:      Me.BtnCityAdd.Value = True
-    Case KeyCodeConstants.vbKeySubtract: Me.BtnCityDel.Value = True
-    Case KeyCodeConstants.vbKeyDivide:   Me.BtnCityEdit.Value = True
-    Case KeyCodeConstants.vbKeyReturn:   Me.BtnCityEdit.Value = True
-    Case 220:                            Me.BtnCityMoveUp.Value = True
-    Case KeyCodeConstants.vbKeyV:        Me.BtnCityMoveDown.Value = True
-    End Select
-End Sub
-' ^ ' ############################## ' ^ '    Cities     ' ^ ' ############################## ' ^ '
-
-'the ui-code for city and person look pretty much identical
-'so the question is could we make a class to do the same
-
-' v ' ############################## ' v '    Persons    ' v ' ############################## ' v '
-Private Sub BtnPersonAdd_Click()
-    Dim i As Long: i = 0 'here we set i to 0 befcause for the undefined person we always want the first city
-    Dim City As City: Set City = MData.Cities_ObjectFromListCtrl(LstCities, i)
-    Dim Person As Person: Set Person = MNew.PersonDefault(City)
-    If MNew.ModalDialog(FPerson, FPerson.BtnOK, FPerson.BtnCancel).ShowDialog(Person, Me) = vbCancel Then Exit Sub
-    MData.Persons_AddLB LstPersons, Person
-End Sub
-
-Private Sub BtnPersonEdit_Click()
-    'If LstPersons.ListCount = 0 Then Exit Sub
+Private Sub BtnPersonView_Click()
     Dim i As Long: i = -1
     If LstPersons.ListCount = 0 Then MsgBox "First add a person!": Exit Sub
-    Dim Person As Person: Set Person = MData.Persons_ObjectFromListCtrl(LstPersons, i)
+    Dim Person As Person: Set Person = MApp.Persons.ObjectFromListCtrl(LstPersons, i)
     If i < 0 Then
         MsgBox "Select an object first!"
         Exit Sub
     End If
-    If MNew.ModalDialog(FPerson, FPerson.BtnOK, FPerson.BtnCancel).ShowDialog(Person, Me) = vbCancel Then Exit Sub
+    If MNew.ModalDialog(FPerson, FPerson.BtnOK, FPerson.BtnCancel, True).ShowDialog(Person, Me) = vbCancel Then Exit Sub
     LstPersons.List(i) = Person.ToStr
 End Sub
 
-Private Sub BtnPersonDel_Click()
-    'If LstPersons.ListCount = 0 Then Exit Sub
-    Dim i As Long: i = -1
-    Dim Person As Person: Set Person = MData.Persons_ObjectFromListCtrl(LstPersons, i)
-    If Person Is Nothing Then MsgBox "First select an element to delete": Exit Sub
-    If MsgBox("Arey you sure to delete the person: " & vbCrLf & Person.ToStr, vbOKCancel) = vbCancel Then Exit Sub
-    MData.Persons_Remove Person
-    LstPersons.RemoveItem i
+Sub UpdateView()
+    MApp.Cities.ToListCtrl LstCities, , True
+    MApp.Persons.ToListCtrl LstPersons, , True
 End Sub
 
-Private Sub BtnPersonMoveUp_Click()
-    'If LstPersons.ListCount = 0 Then Exit Sub
-    MData.Persons_MoveUp LstPersons
+Private Sub mCrudCities_OnEdit(Obj_inout As Object)
+    If Obj_inout Is Nothing Then Set Obj_inout = New City
+    Dim obj As City: Set obj = Obj_inout
+    If MNew.ModalDialog(FCity, FCity.BtnOK, FCity.BtnCancel, False).ShowDialog(obj, Me) = vbCancel Then Exit Sub
 End Sub
 
-Private Sub BtnPersonMoveDown_Click()
-    'If LstPersons.ListCount = 0 Then Exit Sub
-    MData.Persons_MoveDown LstPersons
+Private Sub mCrudPersons_OnEdit(Obj_inout As Object)
+    If Obj_inout Is Nothing Then
+        Dim City As City: Set City = MApp.Cities.ObjectFromListCtrl(LstCities, 0)
+        Set Obj_inout = MNew.PersonDefault(City)
+    End If
+    Dim obj As Person: Set obj = Obj_inout
+    If MNew.ModalDialog(FPerson, FPerson.BtnOK, FPerson.BtnCancel).ShowDialog(obj, Me) = vbCancel Then Exit Sub
 End Sub
-
-Private Sub LstPersons_DblClick()
-    'If LstPersons.ListCount = 0 Then Exit Sub
-    BtnPersonEdit_Click
-End Sub
-
-Private Sub LstPersons_KeyDown(KeyCode As Integer, Shift As Integer)
-    'If LstPersons.ListCount = 0 Then Exit Sub
-    Select Case KeyCode
-    Case KeyCodeConstants.vbKeyAdd:      Me.BtnPersonAdd.Value = True
-    Case KeyCodeConstants.vbKeySubtract: Me.BtnPersonDel.Value = True
-    Case KeyCodeConstants.vbKeyDivide:   Me.BtnPersonEdit.Value = True
-    Case KeyCodeConstants.vbKeyUp Or KeyCodeConstants.vbKeyDown
-                                     If MString.IsShift(KeyCode, Shift, KeyCodeConstants.vbKeyUp) Then
-                                         Me.BtnPersonMoveUp.Value = True
-                                     ElseIf MString.IsShift(KeyCode, Shift, KeyCodeConstants.vbKeyDown) Then
-                                         Me.BtnPersonMoveDown.Value = True
-                                     End If
-    End Select
-End Sub
-
-' ^ ' ############################## ' ^ '    Persons    ' ^ ' ############################## ' ^ '

@@ -19,8 +19,8 @@ Friend Sub New_(Name As String, PostalCode As String)
     m_Name = Name: m_Code = PostalCode
 End Sub
 
-Public Sub NewC(Other As City)
-    With Other: m_Name = .Name: m_Code = .PostalCode: End With
+Public Sub NewC(other As City)
+    With other: m_Name = .Name: m_Code = .PostalCode: End With
 End Sub
 
 Public Sub SetParams(Optional Name, Optional PostalCode)
@@ -40,7 +40,7 @@ Public Property Get PostalCode() As String
     PostalCode = m_Code
 End Property
 
-Public Property Get Ptr() As LongPtr
+Public Property Get Ptr() 'As LongPtr
     Ptr = ObjPtr(Me)
 End Property
 
@@ -49,12 +49,12 @@ Public Property Get Key() As String
     Key = Me.Ptr
 End Property
 
-Public Function IsEqual(Other As City) As Boolean
-    IsEqual = m_Name = Other.Name
+Public Function IsEqual(other As City) As Boolean
+    IsEqual = m_Name = other.Name
 End Function
 
-Public Function IsSame(Other As City) As Boolean
-    If Me Is Other Then IsSame = Me.Ptr = Other.Ptr
+Public Function IsSame(other As City) As Boolean
+    If Me Is other Then IsSame = Me.Ptr = other.Ptr
 End Function
 
 Public Function ToStr() As String

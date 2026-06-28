@@ -13,13 +13,24 @@ Public Function City(ByVal Name As String, ByVal PostalCode As String) As City
     Set City = New City: City.New_ Name, PostalCode
 End Function
 
-Public Function ModalDialog(aDialog As Form, BtnOK As CommandButton, BtnCancel As CommandButton) As ModalDialog
-    Set ModalDialog = New ModalDialog: ModalDialog.New_ aDialog, BtnOK, BtnCancel
+Public Function ModalDialog(aDialog As Form, BtnOK As CommandButton, BtnCancel As CommandButton, Optional ByVal IsReadOnly As Boolean = False) As ModalDialog
+    Set ModalDialog = New ModalDialog: ModalDialog.New_ aDialog, BtnOK, BtnCancel, IsReadOnly
 End Function
 
-Public Function DBcrud(Col As Collection, ListBox As ListBox, _
+Public Function CCollection(ByVal IsHashed As Boolean, Optional Col As Collection = Nothing, Optional Name As String = "", Optional OptionBaseLBound As Long = 1) As CCollection
+    Set CCollection = New CCollection: CCollection.New_ IsHashed, Col, Name, OptionBaseLBound
+End Function
+
+'Public Function DBcrud(Col As Collection, ListBox As ListBox, _
+'                       BtnAdd As CommandButton, Optional BtnAddClone, Optional BtnInsert, Optional BtnInsertClone, Optional BtnEdit, _
+'                       Optional BtnDelete, Optional BtnMoveUp, Optional BtnMoveDown, Optional BtnSortUp, Optional BtnSortDown, Optional BtnSearch) As DBcrud
+'    Set DBcrud = New DBcrud: DBcrud.New_ Col, ListBox, BtnAdd, BtnAddClone, BtnInsert, BtnInsertClone, BtnEdit, BtnDelete, BtnMoveUp, BtnMoveDown, BtnSortUp, BtnSortDown, BtnSearch
+'End Function
+
+Public Function DBcrud(Col As CCollection, ByVal IsHashed As Boolean, ListBox, _
                        BtnAdd As CommandButton, Optional BtnAddClone, Optional BtnInsert, Optional BtnInsertClone, Optional BtnEdit, _
-                       Optional BtnDelete, Optional BtnMoveUp, Optional BtnMoveDown, Optional BtnSortUp, Optional BtnSortDown, Optional BtnSearch) As DBcrud
+                       Optional BtnDelete, Optional BtnMoveUp, Optional BtnMoveDown, Optional BtnSortUp, Optional BtnSortDown, Optional BtnSearch, Optional TxtSearch) As DBcrud
     Set DBcrud = New DBcrud: DBcrud.New_ Col, ListBox, BtnAdd, BtnAddClone, BtnInsert, BtnInsertClone, BtnEdit, BtnDelete, BtnMoveUp, BtnMoveDown, BtnSortUp, BtnSortDown, BtnSearch
 End Function
+
 

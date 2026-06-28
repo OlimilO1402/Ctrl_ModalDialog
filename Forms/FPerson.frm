@@ -101,25 +101,30 @@ Option Explicit
 Private m_Person As Person
 
 Private Sub Form_Load()
-    MData.Cities_ToListCtrl CmbCity
+    MApp.Cities.ToListCtrl CmbCity, , True
 End Sub
 
-Public Sub UpdateView(Obj)
-    Set m_Person = Obj
+Public Sub UpdateView(obj, Optional ByVal IsReadOnly As Boolean = False)
+    Set m_Person = obj
     If m_Person Is Nothing Then MsgBox "The Person does not exist": Exit Sub
     TxtName.Text = m_Person.Name
     TxtBirthDay.Text = m_Person.BirthDay
     If m_Person.City Is Nothing Then MsgBox "The City does not exist": Exit Sub
-    CmbCity.ListIndex = MData.Cities_IndexFromObject(m_Person.City)
+    CmbCity.ListIndex = MApp.Cities.IndexFromObject(m_Person.City)
     CmbCity.Text = m_Person.City.ToStr
+    If IsReadOnly Then
+        Me.TxtName.Enabled = False
+        Me.TxtBirthDay.Enabled = False
+        Me.CmbCity.Enabled = False
+    End If
 End Sub
 
-Public Function UpdateData(Obj) As Boolean
+Public Function UpdateData(obj) As Boolean
 Try: On Error GoTo Catch
     Dim bIsOK As Boolean
     Dim bd As Date:     bd = m_Person.BirthDay: TxtBirthDay.Text = MString.Date_TryParseValidate(TxtBirthDay.Text, "Birthday", "", bIsOK, bd): If Not bIsOK Then Exit Function
     Dim ic As Long: ic = -1
-    Dim ct As City: Set ct = MData.Cities_ObjectFromListCtrl(CmbCity, ic)
+    Dim ct As City: Set ct = MApp.Cities.ObjectFromListCtrl(CmbCity, ic)
     Dim ii As Long:     ii = m_Person.Index
     Dim nm As String:   nm = TxtName.Text
     m_Person.New_ bd, ct, ii, nm

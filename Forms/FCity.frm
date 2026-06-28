@@ -84,15 +84,20 @@ Attribute VB_Exposed = False
 Option Explicit
 Private m_City As City
 
-Public Sub UpdateView(Obj)
+Public Sub UpdateView(Obj, Optional ByVal IsReadOnly As Boolean = False)
     Set m_City = Obj
     With m_City
-        TxtName.Text = .Name
-        TxtPostalCode.Text = .PostalCode
+        TxtName.text = .Name
+        TxtPostalCode.text = .PostalCode
     End With
+    If IsReadOnly Then
+        TxtName.Enabled = False
+        TxtPostalCode.Enabled = False
+    End If
 End Sub
 
 Public Function UpdateData(Obj) As Boolean
-    m_City.NewC MNew.City(TxtName.Text, TxtPostalCode.Text)
+    m_City.NewC MNew.City(TxtName.text, TxtPostalCode.text)
     UpdateData = True
 End Function
+

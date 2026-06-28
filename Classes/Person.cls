@@ -21,8 +21,8 @@ Friend Sub New_(BirthDay As Date, City As City, Index As Long, Name As String)
     m_BirthD = BirthDay: Set m_City = City: m_Index = Index: m_Name = Name
 End Sub
 
-Public Sub NewC(Other As Person)
-    With Other
+Public Sub NewC(other As Person)
+    With other
         m_BirthD = .BirthDay
         Set m_City = .City.Clone
         m_Name = .Name
@@ -41,7 +41,7 @@ Public Sub SetParams(Optional BirthDay, Optional City, Optional Index, Optional 
     If Not IsMissing(Index) Then m_Index = Index
 End Sub
 
-Public Property Get Ptr() As LongPtr
+Public Property Get Ptr() 'As LongPtr
     Ptr = ObjPtr(Me)
 End Property
 
@@ -49,14 +49,14 @@ Public Property Get Key() As String
     Key = Me.Ptr
 End Property
 
-Public Function IsEqual(Other As Person) As Boolean
-    IsEqual = Me.BirthDay = Other.BirthDay: If Not IsEqual Then Exit Function
-    IsEqual = Me.Name = Other.Name:         If Not IsEqual Then Exit Function
-    IsEqual = City.IsEqual(Other.City):     If Not IsEqual Then Exit Function
+Public Function IsEqual(other As Person) As Boolean
+    IsEqual = Me.BirthDay = other.BirthDay: If Not IsEqual Then Exit Function
+    IsEqual = Me.Name = other.Name:         If Not IsEqual Then Exit Function
+    IsEqual = City.IsEqual(other.City):     If Not IsEqual Then Exit Function
 End Function
 
-Public Function IsSame(Other As Person) As Boolean
-    If Me Is Other Then IsSame = Me.Ptr = Other.Ptr
+Public Function IsSame(other As Person) As Boolean
+    If Me Is other Then IsSame = Me.Ptr = other.Ptr
 End Function
 
 Public Property Get BirthDay() As Date
