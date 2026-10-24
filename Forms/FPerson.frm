@@ -104,8 +104,8 @@ Private Sub Form_Load()
     MApp.Cities.ToListCtrl CmbCity, , True
 End Sub
 
-Public Sub UpdateView(obj, Optional ByVal IsReadOnly As Boolean = False)
-    Set m_Person = obj
+Public Sub UpdateView(Obj, Optional ByVal IsReadOnly As Boolean = False)
+    Set m_Person = Obj
     If m_Person Is Nothing Then MsgBox "The Person does not exist": Exit Sub
     TxtName.Text = m_Person.Name
     TxtBirthDay.Text = m_Person.BirthDay
@@ -119,7 +119,7 @@ Public Sub UpdateView(obj, Optional ByVal IsReadOnly As Boolean = False)
     End If
 End Sub
 
-Public Function UpdateData(obj) As Boolean
+Public Function UpdateData(Obj) As Boolean
 Try: On Error GoTo Catch
     Dim bIsOK As Boolean
     Dim bd As Date:     bd = m_Person.BirthDay: TxtBirthDay.Text = MString.Date_TryParseValidate(TxtBirthDay.Text, "Birthday", "", bIsOK, bd): If Not bIsOK Then Exit Function
